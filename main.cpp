@@ -4,27 +4,24 @@
 #include <HTTPClient.h>
 #include <Arduino_JSON.h>
 
-// Replace with your network credentials (STATION)
+// Remplazar por las credenciales de la red WiFi
 const char* ssid = "*****";
 const char* password = "*****";
 
-// String for storing server response
+// String que guarda la respuesta del servidor
 String response;
-String jsonBuffer;
-// JSON document
-//DynamicJsonDocument doc(2048);
 
-// set the LCD number of columns and rows
+// Configura la pantalla LCD número de columnas y filas
 int lcdColumns = 16;
 int lcdRows = 2;
 
 LiquidCrystal_I2C lcd(0x27, lcdColumns, lcdRows);
 
-// Function Wifi Conection
+// Función Conexión Red WiFI
 void initWiFi() {
   WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, password);
-  Serial.print("Connecting to WiFi ..");
+  Serial.print("Conectando a la red WiFi ..");
   while (WiFi.status() != WL_CONNECTED) {
     Serial.print('.');
     delay(1000);
@@ -56,16 +53,16 @@ void loop() {
   lcd.clear();*/
 
   HTTPClient http;
+  // API utilizada
   //String request = "https://api.gael.cloud/general/public/monedas/USD";
   String request = "https://api.libreapi.cl/economy/indicators";
   http.begin(request.c_str());
   http.GET();
   response = http.getString();
   Serial.println(response);
-  //jsonBuffer = response;
-  //Serial.println(jsonBuffer);
   JSONVar myObject = JSON.parse(response);
-
+  
+  // Salida del monitor serial
   /*Serial.print("Json Object = ");
   Serial.println(myObject);
   Serial.print("UF: ");
@@ -140,13 +137,6 @@ void loop() {
   delay(2000);
   lcd.clear();
 
-  /*DeserializationError error = deserializeJson(doc, response);
-  if(error){
-    Serial.print(F("deserializeJson() failed: "));
-    Serial.println(error.f_str());
-    return;
-  }
-  Serial.println(doc["value"].as<char*>());*/
   http.end();
-  delay(2000); // Tiempo de espera para la siguinte consulta
+  delay(2000); // Tiempo de espera para la siguiente consulta
   }
